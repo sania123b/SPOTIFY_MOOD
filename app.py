@@ -12,8 +12,8 @@ load_dotenv()
 app = Flask(__name__)
 
 # Spotify API credentials from environment variables
-CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID', '881efee13ee2450e8ef5e7499c3879d7')
-CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET', '8938ea9ea5d943feb332874602525dec')
+CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')  # Will load from .env file
+CLIENT_SECRET = os.getenv('SPOTIFY_CLIENT_SECRET')
 REDIRECT_URI = os.getenv('SPOTIFY_REDIRECT_URI', 'http://127.0.0.1:5000/callback')
 SCOPE = 'user-library-read user-modify-playback-state'
 
