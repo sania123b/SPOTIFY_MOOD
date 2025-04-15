@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Mood & Language Player</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Spotify Mood & Language Player</h1>
+        
+        <div class="controls">
+            <div class="form-group">
+                <label for="mood">Select Mood:</label>
+                <select id="mood">
+                    {% for mood in moods %}
+                    <option value="{{ mood }}">{{ mood|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="language">Select Language:</label>
+                <select id="language">
+                    {% for lang in languages %}
+                    <option value="{{ lang }}">{{ lang|capitalize }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <button id="findSongBtn">Find Song</button>
+        </div>
+        
+        <div id="result" class="hidden">
+            <div id="trackInfo">
+                <img id="trackImage" src="" alt="Album cover">
+                <div>
+                    <h2 id="trackName"></h2>
+                    <p id="trackArtist"></p>
+                    <p id="trackAlbum"></p>
+                </div>
+            </div>
+            <button id="playBtn">Play Song</button>
+            <a id="spotifyLink" href="#" target="_blank" class="btn">Open in Spotify</a>
+        </div>
+        
+        <div id="error" class="hidden"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const findSongBtn = document.getElementById('findSongBtn');
+            const playBtn = document.getElementById('playBtn');
+            const resultDiv = document.getElementById('result');
+            const errorDiv = document.getElementById('error');
+            
+            let currentTrack = null;
+            
+            findSongBtn.addEventListener('click', async function() {
+                const mood = document.getElementById('mood').value;
+                const language = document.getElementById('language').value;
+                
+                try {
+                    const response = await fetch('/find_song', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ mood, language })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        currentTrack = data;
+                        displayTrackInfo(data);
+                        resultDiv.classList.remove('hidden');
+                        errorDiv.classList.add('hidden');
+                    } else {
+                        showError(data.error || 'Failed to find song');
+                    }
+                } catch (err) {
+                    showError('Network error: ' + err.message);
+                }
+            });
+            
+            playBtn.addEventListener('click', async function() {
+                if (!currentTrack) return;
+                
+                try {
+                    const response = await fetch('/play_song', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            uri: currentTrack.uri,
+                            external_url: currentTrack.external_url
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        alert(data.status);
+                        if (data.external_url) {
+                            window.open(data.external_url, '_blank');
+                        }
+                    } else {
+                        showError(data.error || 'Failed to play song');
+                        if (currentTrack.external_url) {
+                            window.open(currentTrack.external_url, '_blank');
+                        }
+                    }
+                } catch (err) {
+                    showError('Network error: ' + err.message);
+                    if (currentTrack.external_url) {
+                        window.open(currentTrack.external_url, '_blank');
+                    }
+                }
+            });
+            
+            function displayTrackInfo(track) {
+                document.getElementById('trackName').textContent = track.name;
+                document.getElementById('trackArtist').textContent = 'Artist(s): ' + track.artists;
+                document.getElementById('trackAlbum').textContent = 'Album: ' + track.album;
+                document.getElementById('spotifyLink').href = track.external_url;
+                
+                const img = document.getElementById('trackImage');
+                if (track.image) {
+                    img.src = track.image;
+                    img.style.display = 'block';
+                } else {
+                    img.style.display = 'none';
+                }
+            }
+            
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.classList.remove('hidden');
+                resultDiv.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

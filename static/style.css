@@ -1,0 +1,113 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+h1 {
+    text-align: center;
+    color: #1DB954;
+    margin-bottom: 2rem;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+select {
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-family: inherit;
+}
+
+button, .btn {
+    background-color: #1DB954;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+button:hover, .btn:hover {
+    background-color: #1ed760;
+}
+
+#result {
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    padding-top: 2rem;
+}
+
+#trackInfo {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+#trackImage {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+#trackName {
+    margin: 0;
+    color: #1DB954;
+}
+
+#trackArtist, #trackAlbum {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.hidden {
+    display: none;
+}
+
+#error {
+    color: #e74c3c;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fdecea;
+    border-radius: 5px;
+}
